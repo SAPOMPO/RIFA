@@ -5,13 +5,14 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDytfwKBBo0GKAkMOCJURq62TN1KPWEWLU",
-  authDomain: "rifa-con-firebase.firebaseapp.com",
-  projectId: "rifa-con-firebase",
-  storageBucket: "rifa-con-firebase.firebasestorage.app",
-  messagingSenderId: "349264117196",
-  appId: "1:349264117196:web:acca4717e4e2f7c721b169",
-  measurementId: "G-RZ9YG8NGVF"
+  apiKey: "AIzaSyCoKMczVbMySPJly7-lzt1G8SRgRfGtwAc",
+  authDomain: "sapompo-juegounoderoblox.firebaseapp.com",
+  databaseURL: "https://sapompo-juegounoderoblox-default-rtdb.firebaseio.com",
+  projectId: "sapompo-juegounoderoblox",
+  storageBucket: "sapompo-juegounoderoblox.firebasestorage.app",
+  messagingSenderId: "997707897073",
+  appId: "1:997707897073:web:e0523415bbfc090feff150",
+  measurementId: "G-4FLW9DFJYW"
 };
 
 // Inicializar Firebase
