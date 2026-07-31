@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa CR4 - 1M Semanal</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body data-theme="neon-green">
+<div id="toast-container"></div>
+
+<div id="modal-admin-login" class="modal hidden">
+    <div class="modal-content">
+        <span class="btn-close" onclick="window.appModules.ui.toggleModal('modal-admin-login', false)">&times;</span>
+        <h2>🔒 Acceso de Administrador</h2>
+        <form id="admin-login-form">
+            <label for="admin-email">Email:</label>
+            <input type="email" id="admin-email" required autocomplete="username">
+            <label for="admin-password">Contraseña:</label>
+            <input type="password" id="admin-password" required autocomplete="current-password">
+            <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            <p id="login-error-message" class="error-text"></p>
+        </form>
+    </div>
+</div>
+
+<div id="modal-public-query" class="modal hidden">
+    <div class="modal-content glass-box">
+        <span class="btn-close" onclick="window.appModules.ui.toggleModal('modal-public-query', false)">&times;</span>
+        <h2 class="neon-glow-primary">🔍 Consultar mis Boletas</h2>
+        <p>Ingresa tu número de WhatsApp para ver tus reservas y pagos.</p>
+        <form id="public-query-form">
+            <label for="query-phone">Teléfono (WhatsApp):</label>
+            <input type="tel" id="query-phone" required placeholder="Ej: 3219876543">
+            <button type="submit" class="btn-confirm"><i class="fas fa-search"></i> Buscar Boletas</button>
+        </form>
+        <div id="public-query-results" class="hidden" style="margin-top: 16px;"></div>
+    </div>
+</div>
+
+<div id="tooltip-reserva" class="tooltip-reserva hidden"></div>
+
+<div id="modal-ganadores" class="modal hidden">
+    <div class="modal-content glass-box">
+        <span class="btn-close" onclick="window.appModules.ui.toggleModal('modal-ganadores', false)">&times;</span>
+        <h2 class="neon-glow-primary"><i class="fas fa-trophy"></i> Historial de Ganadores</h2>
+        
+        <div id="admin-ganadores-section" class="hidden">
+            <form id="form-registrar-ganador" style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <input type="text" id="ganador-num" required placeholder="Número ganador (ej: 123)">
+                <input type="text" id="ganador-premio" required placeholder="Premio (ej: Moto CR4)">
+                <button type="submit" class="btn-confirm" style="width: 100%; margin-top: 10px;">Registrar Ganador</button>
+            </form>
+        </div>
+        
+        <div id="lista-ganadores"></div>
+    </div>
+</div>
+
+<div id="splash-screen" class="splash-screen">
+    <div class="intro-content">
+        <i class="fas fa-motorcycle intro-icon pulse"></i>
+        <h1 class="neon-glow-red">Gran Rifa</h1>
+        <p>Cargando boletas...</p>
+        <p>(Por favor espere)</p>
+    </div>
+</div>
+
+<main id="app-content" class="hidden">
+    <header class="main-header">
+        <nav class="nav-bar glass-box">
+            <span class="logo-text">Rifa CR4 - 1 Millon Semanal</span>
+            <div class="nav-buttons">
+                <button id="btn-theme-toggle" class="btn-nav"><i class="fas fa-palette"></i> Tema</button>
+                <button id="btn-public-query" class="btn-nav"><i class="fas fa-search"></i> Mis Boletas</button>
+                <button id="btn-admin" class="btn-nav"><i class="fas fa-user-lock"></i> Admin</button>
+                <button id="btn-ganadores" class="btn-nav"><i class="fas fa-trophy"></i> Historial</button>
+            </div>
+        </nav>
+        
+        <div id="theme-selector-panel" class="glass-box hidden" style="margin-top: 10px; text-align: center;">
+            <p>Selecciona tu estilo visual:</p>
+            <div class="theme-buttons">
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-green')">🟢 Neón Verde</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-blue')">🔵 Neón Azul</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('vip-gold')">🟡 Dorado VIP</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-red')">🔴 Neón Rojo</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="glass-box" style="margin-top:18px; text-align:center;">
+        <h2 style="margin-bottom:6px;">¿Cómo funciona la página? 🏍️🎟️</h2>
+        <p style="font-size:0.95rem; line-height:1.5; color:var(--muted);">
+            Elige tus números disponibles del <b>000 al 999</b> y resérvalos con un solo clic. 
+            Completa tus datos y confirma la reserva por WhatsApp. 
+            Una vez el pago sea verificado, tu boleta quedará <b>marcada como PAGADA</b> y 
+            participarás automáticamente en los sorteos semanales y el sorteo final de la moto.  
+            <br><br>
+            <b>Colores:</b> <span style="color: var(--color-primary-theme)">🟩 Libre</span> – <span style="color: var(--color-reserved)">🟨 Reservado</span> – <span style="color: var(--color-paid)">🔴 Pagado</span>
+        </p>
+    </section>
+
+    <section class="hero-banner fade-in">
+        <img src="Rifa.jpg" alt="Imagen de la Moto Honda CR4 de la Rifa" class="banner-img">
+        <div class="game-details glass-box slide-up">
+            <h2>¡Que oferton 👌!</h2>
+            <p class="price neon-glow-primary">$25.000 / Boleta</p>
+            <p>Fecha Sorteo Final: <span class="highlight-text">30/01/2026</span></p>
+            
+            <div class="progress-wrapper">
+                <p style="font-size: 0.85rem; margin-top: 12px; margin-bottom: 4px;">Progreso de la Rifa (<span id="progress-text">0</span>%)</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="main-progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-stats glass-box slide-up" style="animation-delay: 1.8s;">
+        <h3>Tiempo Restante</h3>
+        <div class="timers-grid">
+            <div>
+                <p>Sorteo Final</p>
+                <div id="timer-final" class="countdown-timer neon-glow-red"></div>
+            </div>
+            <div class="timer-box">
+                <p>Próximo Semanal</p>
+                <div id="timer-semanal" class="countdown-timer neon-glow-primary"></div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 20px;">Rifas completas</h3>
+        <div class="stats-grid">
+            <div class="stat-item libre">
+                <p id="stat-libre">0</p>
+                <span>Libres</span>
+            </div>
+            <div class="stat-item reservado">
+                <p id="stat-reservado">0</p>
+                <span>Reservadas</span>
+            </div>
+            <div class="stat-item pagado">
+                <p id="stat-pagado">0</p>
+                <span>Pagadas</span>
+            </div>
+            <div class="stat-item total">
+                <p>1000</p>
+                <span>Total</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
+            <i class="fas fa-fire" style="color: #f5a623;"></i> <span id="stat-24h" class="highlight-text">0</span> boletas reservadas/pagadas en las últimas 24 horas. ¡No te quedes sin la tuya!
+        </div>
+    </section>
+
+    <section class="boletas-selection-section slide-up" style="animation-delay: 2.1s;">
+        <div class="glass-box">
+            <h3>Selecciona tus Números (000-999)👍</h3>
+            <p class="leyenda-container">
+                <span class="badge disponible"><i class="fas fa-circle"></i> Libre</span>
+                <span class="badge reservado"><i class="fas fa-circle"></i> Reservado</span>
+                <span class="badge pagado"><i class="fas fa-circle"></i> Pagado</span>
+            </p>
+
+            <div class="search-filter-bar">
+                <input type="text" id="search-number" placeholder="Buscar número (ej: 123)">
+                <select id="filter-status">
+                    <option value="todos">Mostrar Todos</option>
+                    <option value="libre">Disponibles</option>
+                    <option value="reservado">Reservados</option>
+                    <option value="pagado">Pagados</option>
+                </select>
+                <button id="btn-grid-toggle" class="btn-nav"><i class="fas fa-compress-alt"></i> Cuadrícula</button>
+            </div>
+            
+            <div class="pagination-controls" id="pagination-controls"></div>
+            
+            <div id="grid-boletas" class="grid-container"></div>
+        </div>
+    </section>
+
+    <section class="rules-faq-section slide-up" style="animation-delay: 2.4s;">
+        <h2>Reglas y Premios</h2>
+        <div class="glass-box">
+            <details>
+                <summary>📅 ¿Cuándo es el sorteo final?</summary>
+                <p>El sorteo final será el 30/01/2026. Todos los números pagados, juegan. 🔥</p>
+            </details>
+            <details>
+                <summary>📌 ¿Necesito estar presente para ganar?</summary>
+                <p>No es necesario. Si ganas te contactamos de inmediato para entregar el premio. 🏆</p>
+            </details>
+            <details>
+                <summary>🧾 ¿Entregan comprobante?</summary>
+                <p>Sí, cada reserva genera un registro digital en el sistema, y los pagos quedan registrados. Todo transparente. ✔</p>
+            </details>
+            <details>
+                <summary>🎫 ¿Puedo comprar varias boletas?</summary>
+                <p>¡Claro! Entre más números tengas, más probabilidades. Puede seleccionar 1, 3, 5 o todas las que quieras. 😎</p>
+            </details>
+            <details>
+                <summary>🟢 ¿Qué significan los colores de los números?</summary>
+                <p>
+                    🟢 <b>Libre:</b> Disponible para comprar<br>
+                    🟡 <b>Reservado:</b> Alguien lo solicitó, pero aún no pagó<br>
+                    🔴 <b>Pagado:</b> Número asegurado para el sorteo
+                </p>
+            </details>
+            <details>
+                <summary>🚚 ¿Cómo entregan la moto si gano?</summary>
+                <p>Coordinamos entrega en persona con documentos y papeles al día. El ganador se lleva la moto legal y asegurada. 🏍💨</p>
+            </details>
+            <details>
+                <summary>⭐ ¿Es confiable y verificable?</summary>
+                <p>Todo el sistema registra automáticamente compras, reservas y pagos. También podrás ver ganadores anteriores. Transparencia 100%. 🔐</p>
+            </details>
+        </div>
+    </section>
+
+    <div class="creditos" id="creditos-container" style="display:none;">
+        <div class="contenedor creditos-contenido">
+            <h1 id="texto-dinamico"></h1>
+            <button class="btn-click" id="mostrar-contacto">Contacto</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy;🙌&copy;</p>
+    </footer>
+</main>
+
+<div id="sticky-form-buy" class="sticky-footer hidden">
+    <div class="buy-panel">
+        <div class="total-info">
+            <span class="total-text">Total a Pagar <span id="num-seleccionados-count"></span>:</span>
+            <span id="total-price" class="neon-glow-red"></span>
+        </div>
+        <button id="btn-participar-main" class="btn-confirm pulse"><i class="fab fa-whatsapp"></i> Participar Ahora</button>
+    </div>
+</div>
+
+<div id="modal-cliente-confirm" class="modal hidden">
+    <div class="modal-content glass-box">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-cliente-confirm', false);">&times;</button>
+        <h2 class="neon-glow-primary">Confirma tu Reserva</h2>
+        <p>Estás a punto de reservar los números: <strong id="client-modal-numbers" class="highlight-text"></strong></p>
+        <p class="small-text">Diligencia tus datos para que podamos contactarte y confirmar tu pago. Tu reserva dura 2 horas.</p>
+        
+        <div class="payment-methods" style="margin: 16px 0; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+            <p style="margin-bottom: 8px; font-weight: 600;">Cuentas de Pago:</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span>🟣 Nequi: 321 963 7388</span>
+                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyText('3219637388')"><i class="fas fa-copy"></i> Copiar</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🔴 Daviplata: 321 963 7388</span>
+                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyText('3219637388')"><i class="fas fa-copy"></i> Copiar</button>
+            </div>
+        </div>
+
+        <form id="client-confirm-form">
+            <label for="client-name">Nombre Completo:</label>
+            <input type="text" id="client-name" required placeholder="(Completo, obligatorio)">
+            
+            <label for="client-phone">Teléfono de Contacto (WhatsApp):</label>
+            <input type="tel" id="client-phone" required placeholder="Ej: 3219876543">
+            
+            <label for="client-receipt">Opcional: Subir comprobante ahora</label>
+            <input type="file" id="client-receipt" accept="image/png, image/jpeg, application/pdf">
+            
+            <button type="submit" class="btn-confirm-whatsapp"><i class="fab fa-whatsapp"></i> RESERVAR Y ENVIAR WHATSAPP</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-admin-panel" class="modal hidden">
+    <div class="modal-content glass-box admin-size">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-admin-panel', false);">&times;</button>
+        <h2 class="neon-glow-red">Panel de Admin</h2>
+        <p>Gestión de boletas.😎</p>
+        
+        <div class="admin-metrics-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+            <div class="stat-item pagado">
+                <p id="admin-metric-ingresos">$0</p>
+                <span>Recaudado Total</span>
+            </div>
+            <div class="stat-item reservado">
+                <p id="admin-metric-pendiente">$0</p>
+                <span>Pendiente Cobro</span>
+            </div>
+            <div class="stat-item libre">
+                <p id="admin-metric-proyectado">$0</p>
+                <span>Proyectado 100%</span>
+            </div>
+        </div>
+
+        <div class="admin-actions-grid">
+            <button id="btn-assign-manual" class="btn-admin-action"><i class="fas fa-edit"></i> Asignar Manual</button>
+            <button id="btn-download-data" class="btn-admin-action"><i class="fas fa-download"></i> Exportar Avanzado</button>
+            <button id="btn-reset-data" class="btn-admin-action btn-danger"><i class="fas fa-eraser"></i> RESET TOTAL</button>
+        </div>
+        
+        <h3>Top Compradores</h3>
+        <div class="admin-data-summary glass-box" style="max-height: 200px;">
+            <table id="table-top-buyers" class="admin-table">
+                <thead><tr><th>Cliente</th><th>Teléfono</th><th>Boletas (Pagadas/Reservadas)</th></tr></thead>
+                <tbody id="table-top-buyers-body"></tbody>
+            </table>
+        </div>
+
+        <h3>Boletas Reservadas (<span id="count-reservadas">0</span>)</h3>
+        <div class="admin-data-summary glass-box">
+            <table id="table-reservadas" class="admin-table"></table>
+        </div>
+        <h3>Boletas Pagadas (<span id="count-pagadas">0</span>)</h3>
+        <div class="admin-data-summary glass-box">
+            <table id="table-pagadas" class="admin-table"></table>
+        </div>
+    </div>
+</div>
+
+<div id="modal-export-advanced" class="modal hidden">
+    <div class="modal-content glass-box">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-export-advanced', false); window.appModules.ui.toggleModal('modal-admin-panel', true);">&times;</button>
+        <h2 class="neon-glow-primary">Exportación Avanzada</h2>
+        <p>Seleccione el formato y los datos a exportar.</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+            <button class="btn-nav" onclick="window.appModules.admin.exportData('csv', 'pagadas')">📄 CSV (Solo Pagadas)</button>
+            <button class="btn-nav" onclick="window.appModules.admin.exportData('csv', 'todos')">📄 CSV (Todas las registradas)</button>
+            <button class="btn-nav" onclick="window.appModules.admin.exportData('json', 'todos')">📋 JSON (Respaldo Completo)</button>
+            <button class="btn-nav" onclick="window.appModules.admin.exportLogs()">📜 Descargar Logs de Auditoría</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-assign-manual" class="modal hidden">
+    <div class="modal-content glass-box">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-assign-manual', false); window.appModules.ui.toggleModal('modal-admin-panel', true);">&times;</button>
+        <h2 class="neon-glow-primary">Asignación Directa</h2>
+        <p>Asigna una boleta de forma rápida, sin pasar por WhatsApp.</p>
+        <form id="form-assign-manual">
+            <label for="manual-num">Número de Boleta (000-999):</label>
+            <input type="number" id="manual-num" min="0" max="999" required placeholder="Ej: 045">
+            <label for="manual-name">Nombre del Cliente:</label>
+            <input type="text" id="manual-name" required placeholder="Ej: Pedro Gonzales">
+            <label for="manual-phone">Teléfono:</label>
+            <input type="tel" id="manual-phone" required placeholder="Ej: 3001234567">
+            <div class="admin-actions-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
+                <button type="button" class="btn-confirm btn-pagar-manual" id="btn-manual-pagar">Marcar como PAGADO</button>
+                <button type="button" class="btn-admin-action btn-reservar-manual" id="btn-manual-reservar">Marcar como RESERVADO</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-register-winner" class="modal hidden">
+    <div class="modal-content glass-box">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-register-winner', false); window.appModules.ui.toggleModal('modal-admin-panel', true);">&times;</button>
+        <h2 class="neon-glow-red">Registro de Sorteo</h2>
+        <p>Registra el resultado de un sorteo semanal o final.</p>
+        <form id="form-register-winner">
+            <label for="winner-date">Fecha del Sorteo:</label>
+            <input type="date" id="winner-date" required value="2026-01-30">
+            <label for="winner-lottery">Lotería / Sorteo:</label>
+            <input type="text" id="winner-lottery" required placeholder="Ej: Lotería de Medellín">
+            <label for="winner-number">Número Ganador (000-999):</label>
+            <input type="number" id="winner-number" min="0" max="999" required placeholder="Ej: 456">
+            <button type="submit" class="btn-confirm-whatsapp"><i class="fas fa-crown"></i> REGISTRAR GANADOR</button>
+        </form>
+    </div>
+</div>
+
+<div id="modal-sorteo-history" class="modal hidden">
+    <div class="modal-content glass-box admin-size">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-sorteo-history', false);">&times;</button>
+        <h2 class="neon-glow-primary">Historial de Sorteos</h2>
+        <p>Ganadores anteriores registrados.</p>
+        <div class="admin-data-summary glass-box" style="max-height: 500px;">
+            <table id="table-winner-history" class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Lotería</th>
+                        <th>Número</th>
+                        <th>Estado Cliente</th>
+                    </tr>
+                </thead>
+                <tbody id="table-winner-history-body">
+                    <tr><td colspan="4">Cargando historial...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer class="epic-footer">
+    <div class="footer-content glass-box">
+        <div class="footer-section contact-info">
+            <h3>Contacto Directo del Desarrollador</h3>
+            <p><i class="fas fa-user"></i> Daniel Camilo Rey Flórez</p>
+            <p><a href="https://danielcamiloreyflorez14-boop.github.io/RIFA/creditos.html" target="_blank">Página del administrador</a></p>
+        </div>
+        <div class="footer-section">
+            <h3>Legal & Créditos</h3>
+            <p class="credit-text small">
+                © 2026 | Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</footer>
+
+<a href="https://wa.me/573227086610?text=Hola%2C%20t%C3%BA%20eres%20el%20desarrollador%20de%20la%20p%C3%A1gina%20Gran%20Rifa-%20CR4.%20" 
+   id="floating-whatsapp-btn" target="_blank" class="pulse-whatsapp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<div id="hidden-receipt-container" style="display:none;"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
