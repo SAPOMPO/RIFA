@@ -169,7 +169,7 @@ function updateStickyFooter() {
     const count = seleccionActual.size;
     
     if (count > 0) {
-        const total = count * 25000;
+        const total = count * 35000;
         totalPriceDisplay.textContent = `$${total.toLocaleString('es-CO')} COP`;
         countDisplay.textContent = `(${count})`;
         stickyFooter.classList.remove('hidden');

@@ -3,7 +3,7 @@ import { db } from './firebase-config.js';
 import { toast, formatMoney } from './utils.js';
 
 let adminBoletasData = [];
-const PRECIO_BOLETA = 25000;
+const PRECIO_BOLETA = 35000;
 
 export function initAdmin(data) {
     adminBoletasData = data;

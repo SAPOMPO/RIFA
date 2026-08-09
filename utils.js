@@ -51,7 +51,7 @@ export async function generateReceiptPDF(name, phone, numbersStr, total, dateStr
     const container = document.getElementById('hidden-receipt-container');
     container.innerHTML = `
         <div class="pdf-receipt-template" id="receipt-to-print">
-            <h1>🎫 Comprobante de Reserva CR4</h1>
+            <h1>🎫 Comprobante de Reserva Moto Pulzar NS400Z</h1>
             <div class="details-row"><strong>ID Transacción:</strong> ${ticketId}</div>
             <div class="details-row"><strong>Nombre:</strong> ${sanitizeHTML(name)}</div>
             <div class="details-row"><strong>Teléfono:</strong> ${sanitizeHTML(phone)}</div>
@@ -66,7 +66,7 @@ export async function generateReceiptPDF(name, phone, numbersStr, total, dateStr
     `;
     
     new QRCode(document.getElementById("qr-container"), {
-        text: `RifaCR4|ID:${ticketId}|Num:${numbersStr}|Total:${total}`,
+        text: `Rifa-NS400Z|ID:${ticketId}|Num:${numbersStr}|Total:${total}`,
         width: 128,
         height: 128
     });
@@ -74,7 +74,7 @@ export async function generateReceiptPDF(name, phone, numbersStr, total, dateStr
     const element = document.getElementById('receipt-to-print');
     const opt = {
         margin: 1,
-        filename: `Reserva_CR4_${ticketId}.pdf`,
+        filename: `Reserva_NS400Z_${ticketId}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }

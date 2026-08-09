@@ -61,6 +61,8 @@ function initializeDatabase() {
 }
 
 function cleanExpiredReservations(currentData) {
+    if (!window.appData.currentUser) return;
+    
     let updates = {};
     const now = Date.now();
     Object.keys(currentData).forEach(key => {
@@ -208,7 +210,7 @@ function setupEventListeners() {
 
         try {
             await update(dbRef(db), updates);
-            const total = Object.keys(updates).length * 25000;
+            const total = Object.keys(updates).length * 35000;
             const numsStr = Object.values(updates).map(u => u.num).join(', ');
             
             await utils.generateReceiptPDF(nombre, telefono, numsStr, total, new Date().toLocaleString(), transactionId);
