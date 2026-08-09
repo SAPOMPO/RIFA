@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rifa CR4 - 1M Semanal</title>
+    <title>MOTO PULZAR NS400Z - 1M Semanal</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -52,8 +52,8 @@
         
         <div id="admin-ganadores-section" class="hidden">
             <form id="form-registrar-ganador" style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
-                <input type="text" id="ganador-num" required placeholder="Número ganador (ej: 123)">
-                <input type="text" id="ganador-premio" required placeholder="Premio (ej: Moto CR4)">
+                <input type="text" id="ganador-num" required placeholder="Número ganador (ej: 000)">
+                <input type="text" id="ganador-premio" required placeholder="Premio (ej: 1M Semanal)">
                 <button type="submit" class="btn-confirm" style="width: 100%; margin-top: 10px;">Registrar Ganador</button>
             </form>
         </div>
@@ -74,7 +74,7 @@
 <main id="app-content" class="hidden">
     <header class="main-header">
         <nav class="nav-bar glass-box">
-            <span class="logo-text">Rifa CR4 - 1 Millon Semanal</span>
+            <span class="logo-text">Moto Pulzar NS400Z - 1 Millon Semanal</span>
             <div class="nav-buttons">
                 <button id="btn-theme-toggle" class="btn-nav"><i class="fas fa-palette"></i> Tema</button>
                 <button id="btn-public-query" class="btn-nav"><i class="fas fa-search"></i> Mis Boletas</button>
@@ -86,32 +86,30 @@
         <div id="theme-selector-panel" class="glass-box hidden" style="margin-top: 10px; text-align: center;">
             <p>Selecciona tu estilo visual:</p>
             <div class="theme-buttons">
-                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-green')">🟢 Neón Verde</button>
-                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-blue')">🔵 Neón Azul</button>
-                <button class="btn-nav" onclick="window.appModules.ui.setTheme('vip-gold')">🟡 Dorado VIP</button>
-                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-red')">🔴 Neón Rojo</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-green')">🟢 Verde</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-blue')">🔵 Azul</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('vip-gold')">🟡 Dorado</button>
+                <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-red')">🔴 Rojo</button>
             </div>
         </div>
     </header>
 
-    <section class="glass-box" style="margin-top:18px; text-align:center;">
-        <h2 style="margin-bottom:6px;">¿Cómo funciona la página? 🏍️🎟️</h2>
-        <p style="font-size:0.95rem; line-height:1.5; color:var(--muted);">
-            Elige tus números disponibles del <b>000 al 999</b> y resérvalos con un solo clic. 
-            Completa tus datos y confirma la reserva por WhatsApp. 
-            Una vez el pago sea verificado, tu boleta quedará <b>marcada como PAGADA</b> y 
-            participarás automáticamente en los sorteos semanales y el sorteo final de la moto.  
-            <br><br>
-            <b>Colores:</b> <span style="color: var(--color-primary-theme)">🟩 Libre</span> – <span style="color: var(--color-reserved)">🟨 Reservado</span> – <span style="color: var(--color-paid)">🔴 Pagado</span>
-        </p>
-    </section>
+<section class="glass-box" style="margin-top:18px; text-align:center;">
+    <h2 style="margin-bottom:6px;">¿Cómo te ganas esa nave? 🚀</h2>
+    <p style="font-size:0.95rem; line-height:1.5; color:var(--muted);">
+        Elige tu número del <b>000 al 999</b> (el de la suerte, el cumpleaños del perro, el que sea).<br>
+        Haz tu reserva y envíanos el comprobante por WhatsApp.<br>
+        ¡Y listo! Quedas anotado para los premios semanales y la moto.<br><br>
+        <b>Colores:</b> <span style="color: var(--color-primary-theme)">🟩 Libre</span> | <span style="color: var(--color-reserved)">🟨 Reservado</span> | <span style="color: var(--color-paid)">🔴 Pagado</span>
+    </p>
+</section>
 
     <section class="hero-banner fade-in">
         <img src="Rifa.jpg" alt="Imagen de la Moto Honda CR4 de la Rifa" class="banner-img">
         <div class="game-details glass-box slide-up">
-            <h2>¡Que oferton 👌!</h2>
-            <p class="price neon-glow-primary">$25.000 / Boleta</p>
-            <p>Fecha Sorteo Final: <span class="highlight-text">30/01/2026</span></p>
+            <h2>¡Que oferton 😮‍💨!</h2>
+            <p class="price neon-glow-primary">$35.000 / Boleta</p>
+            <p>Fecha Sorteo Final: <span class="highlight-text">25/12/2026</span></p>
             
             <div class="progress-wrapper">
                 <p style="font-size: 0.85rem; margin-top: 12px; margin-bottom: 4px;">Progreso de la Rifa (<span id="progress-text">0</span>%)</p>
@@ -186,43 +184,43 @@
         </div>
     </section>
 
-    <section class="rules-faq-section slide-up" style="animation-delay: 2.4s;">
-        <h2>Reglas y Premios</h2>
-        <div class="glass-box">
-            <details>
-                <summary>📅 ¿Cuándo es el sorteo final?</summary>
-                <p>El sorteo final será el 30/01/2026. Todos los números pagados, juegan. 🔥</p>
-            </details>
-            <details>
-                <summary>📌 ¿Necesito estar presente para ganar?</summary>
-                <p>No es necesario. Si ganas te contactamos de inmediato para entregar el premio. 🏆</p>
-            </details>
-            <details>
-                <summary>🧾 ¿Entregan comprobante?</summary>
-                <p>Sí, cada reserva genera un registro digital en el sistema, y los pagos quedan registrados. Todo transparente. ✔</p>
-            </details>
-            <details>
-                <summary>🎫 ¿Puedo comprar varias boletas?</summary>
-                <p>¡Claro! Entre más números tengas, más probabilidades. Puede seleccionar 1, 3, 5 o todas las que quieras. 😎</p>
-            </details>
-            <details>
-                <summary>🟢 ¿Qué significan los colores de los números?</summary>
-                <p>
-                    🟢 <b>Libre:</b> Disponible para comprar<br>
-                    🟡 <b>Reservado:</b> Alguien lo solicitó, pero aún no pagó<br>
-                    🔴 <b>Pagado:</b> Número asegurado para el sorteo
-                </p>
-            </details>
-            <details>
-                <summary>🚚 ¿Cómo entregan la moto si gano?</summary>
-                <p>Coordinamos entrega en persona con documentos y papeles al día. El ganador se lleva la moto legal y asegurada. 🏍💨</p>
-            </details>
-            <details>
-                <summary>⭐ ¿Es confiable y verificable?</summary>
-                <p>Todo el sistema registra automáticamente compras, reservas y pagos. También podrás ver ganadores anteriores. Transparencia 100%. 🔐</p>
-            </details>
-        </div>
-    </section>
+<section class="rules-faq-section slide-up" style="animation-delay: 2.4s;">
+    <h2>Lo que necesitas saber (¡sin rodeos!) 📜⚡</h2>
+    <div class="glass-box">
+        <details>
+            <summary>📅 ¿Cuándo me gano esa nave? (Sorteo final)</summary>
+            <p>El día de la verdad es el <b>25 de Diciembre de 2026</b> con la Lotería de Santander. Si tu boleta dice 🔴 <b>PAGADO</b>, ¡ya estás cruzando los dedos! 🤞🔥</p>
+        </details>
+        <details>
+            <summary>📌 ¿Tengo que estar pegado a la pantalla para ganar?</summary>
+            <p>¡Para nada! Si caes como ganador, te llamamos hasta por debajo de las piedras de una para darte la buena noticia. Tú solo ten el celular cargado. 📲🏆</p>
+        </details>
+        <details>
+            <summary>🧾 ¿Cómo sé que mi compra sí quedó guardada?</summary>
+            <p>Cero cuentos raros. Apenas envías tu comprobante, el sistema registra tu número digitalmente y pasa a rojo. Todo transparente, legal y a la vista de todos. ✔️🧾</p>
+        </details>
+        <details>
+            <summary>🎫 ¿Puedo comprar un combo de números para asegurar?</summary>
+            <p>¡Obvio! Llevarte 1 está bien, pero llevarte 3, 5 o 10 te pone más cerca del motor. Entre más números asegures, ¡menos chance le dejas al vecino! 😎🎟️</p>
+        </details>
+        <details>
+            <summary>🚦 ¿Qué significan las luces de colores?</summary>
+            <p>
+                🟩 <b>Libre:</b> ¡Aprovéchalo antes de que te lo quiten!<br>
+                🟨 <b>Reservado:</b> Alguien lo apartó pero no ha pagado (aún puede volar).<br>
+                🔴 <b>Pagado:</b> ¡Boleta asegurada y lista para el premio! 🎯
+            </p>
+        </details>
+        <details>
+            <summary>🚚 Si me gano la moto, ¿cómo me la entregan?</summary>
+            <p>Te la entregamos con documentos al día, llaves en mano y lista para encender. Te la llevas 100% legal, asegurada y directa para rodar. 🏍️💨✨</p>
+        </details>
+        <details>
+            <summary>⭐ ¿Qué tan seguro y confiable es esto?</summary>
+            <p>Cero rodeos. El sistema guarda automáticamente tus reservas y pagos sin falla. Además, podrás revisar los testimonios y ganadores pasados. ¡Aquí todo es legal y transparente! 🔐🤝</p>
+        </details>
+    </div>
+</section>
 
     <div class="creditos" id="creditos-container" style="display:none;">
         <div class="contenedor creditos-contenido">
@@ -232,7 +230,7 @@
     </div>
 
     <footer>
-        <p>&copy;🙌&copy;</p>
+        <p>&copy;Camilin&copy;</p>
     </footer>
 </main>
 
@@ -260,7 +258,7 @@
                 <button type="button" class="btn-nav" onclick="window.appModules.utils.copyText('3219637388')"><i class="fas fa-copy"></i> Copiar</button>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span>🔴 Daviplata: 321 963 7388</span>
+                <span>🔴 Efectivo: Dime en donde y hay estare</span>
                 <button type="button" class="btn-nav" onclick="window.appModules.utils.copyText('3219637388')"><i class="fas fa-copy"></i> Copiar</button>
             </div>
         </div>
@@ -284,7 +282,7 @@
     <div class="modal-content glass-box admin-size">
         <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-admin-panel', false);">&times;</button>
         <h2 class="neon-glow-red">Panel de Admin</h2>
-        <p>Gestión de boletas.😎</p>
+        <p>Gestión de boletas</p>
         
         <div class="admin-metrics-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
             <div class="stat-item pagado">
@@ -304,7 +302,7 @@
         <div class="admin-actions-grid">
             <button id="btn-assign-manual" class="btn-admin-action"><i class="fas fa-edit"></i> Asignar Manual</button>
             <button id="btn-download-data" class="btn-admin-action"><i class="fas fa-download"></i> Exportar Avanzado</button>
-            <button id="btn-reset-data" class="btn-admin-action btn-danger"><i class="fas fa-eraser"></i> RESET TOTAL</button>
+            <button id="btn-reset-data" class="btn-admin-action btn-danger"><i class="fas fa-eraser"></i> Reestableser</button>
         </div>
         
         <h3>Top Compradores</h3>
@@ -367,11 +365,11 @@
         <p>Registra el resultado de un sorteo semanal o final.</p>
         <form id="form-register-winner">
             <label for="winner-date">Fecha del Sorteo:</label>
-            <input type="date" id="winner-date" required value="2026-01-30">
+            <input type="date" id="winner-date" required value="2026-12-25">
             <label for="winner-lottery">Lotería / Sorteo:</label>
-            <input type="text" id="winner-lottery" required placeholder="Ej: Lotería de Medellín">
+            <input type="text" id="winner-lottery" required placeholder="Ej: Bucaramanga">
             <label for="winner-number">Número Ganador (000-999):</label>
-            <input type="number" id="winner-number" min="0" max="999" required placeholder="Ej: 456">
+            <input type="number" id="winner-number" min="0" max="999" required placeholder="Ej: 999">
             <button type="submit" class="btn-confirm-whatsapp"><i class="fas fa-crown"></i> REGISTRAR GANADOR</button>
         </form>
     </div>
@@ -404,7 +402,7 @@
     <div class="footer-content glass-box">
         <div class="footer-section contact-info">
             <h3>Contacto Directo del Desarrollador</h3>
-            <p><i class="fas fa-user"></i> Daniel Camilo Rey Flórez</p>
+            <p><i class="fas fa-user"></i> Camilin</p>
             <p><a href="https://danielcamiloreyflorez14-boop.github.io/RIFA/creditos.html" target="_blank">Página del administrador</a></p>
         </div>
         <div class="footer-section">
@@ -416,7 +414,7 @@
     </div>
 </footer>
 
-<a href="https://wa.me/573227086610?text=Hola%2C%20t%C3%BA%20eres%20el%20desarrollador%20de%20la%20p%C3%A1gina%20Gran%20Rifa-%20CR4.%20" 
+<a href="https://wa.me/573227086610?text=Hola%2C%20tengo%20una%20duda%20sobre%20la%20rifa%20de%20la%20Pulsar%20NS400Z" 
    id="floating-whatsapp-btn" target="_blank" class="pulse-whatsapp">
     <i class="fab fa-whatsapp"></i>
 </a>

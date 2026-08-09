@@ -12,7 +12,7 @@ window.appModules = { ui, admin, utils };
 
 const TOTAL_BOLETAS = 1000;
 const EXPIRATION_TIME_MS = 2 * 60 * 60 * 1000;
-const WHATSAPP_NUMBER = "573219637388";
+const WHATSAPP_NUMBER = "3219637388";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSavedPreferences();
@@ -215,7 +215,7 @@ function setupEventListeners() {
             
             if(typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             
-            const msg = `*✅ RESERVA CR4 - TRANSACCION ${transactionId}*\n\nHola, soy *${nombre}*. Tel: *${telefono}*.\n\n*🎫 Números:* ${numsStr}\n*💰 Total:* ${utils.formatMoney(total)}\n\n⚠️ Adjunto mi comprobante PDF y el comprobante de pago Nequi/Daviplata.`;
+            const msg = `*✅ Moto Pulzar NS400Z  - TRANSACCION ${transactionId}*\n\nHola, soy *${nombre}*. Tel: *${telefono}*.\n\n*🎫 Números:* ${numsStr}\n*💰 Total:* ${utils.formatMoney(total)}\n\n⚠️ Adjunto mi comprobante PDF y el comprobante de pago Nequi.`;
             const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
             
             ui.toggleModal('modal-cliente-confirm', false);
@@ -326,7 +326,7 @@ function initTimers() {
     const timerSemanal = document.getElementById('timer-semanal');
     setInterval(() => {
         const now = Date.now();
-        const fFinal = new Date('2026-01-30T22:00:00').getTime();
+        const fFinal = new Date('2026-12-25T22:00:00').getTime();
         if (timerFinal) {
             const dFinal = fFinal - now;
             if (dFinal > 0) {
@@ -340,17 +340,22 @@ function initTimers() {
             }
         }
         
+        const fLimiteSemanal = new Date('2026-12-18T22:00:00').getTime();
         let pSemanal = new Date();
         pSemanal.setHours(22, 0, 0, 0);
         while (pSemanal.getDay() !== 5 || pSemanal.getTime() <= now) { pSemanal.setDate(pSemanal.getDate() + 1); }
         if (timerSemanal) {
-            const dSemanal = pSemanal.getTime() - now;
-            if (dSemanal > 0) {
-                const d = Math.floor(dSemanal / (1000 * 60 * 60 * 24));
-                const h = Math.floor((dSemanal % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const m = Math.floor((dSemanal % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((dSemanal % (1000 * 60)) / 1000);
-                timerSemanal.innerHTML = `${d}D ${h.toString().padStart(2, '0')}H ${m.toString().padStart(2, '0')}M ${s.toString().padStart(2, '0')}S`;
+            if (now > fLimiteSemanal) {
+                timerSemanal.innerHTML = "¡SORTEOS SEMANALES FINALIZADOS!";
+            } else {
+                const dSemanal = pSemanal.getTime() - now;
+                if (dSemanal > 0) {
+                    const d = Math.floor(dSemanal / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((dSemanal % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const m = Math.floor((dSemanal % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((dSemanal % (1000 * 60)) / 1000);
+                    timerSemanal.innerHTML = `${d}D ${h.toString().padStart(2, '0')}H ${m.toString().padStart(2, '0')}M ${s.toString().padStart(2, '0')}S`;
+                }
             }
         }
     }, 1000);
