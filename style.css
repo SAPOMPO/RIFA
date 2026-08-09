@@ -272,8 +272,9 @@ main {
 .banner-img {
     width: 100%;
     height: auto;
+    max-width: 100%;
     aspect-ratio: 1472 / 623;
-    object-fit: cover;
+    object-fit: fill;
     display: block;
     margin: 0 auto;
     border-radius: 20px;
