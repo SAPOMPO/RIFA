@@ -42,20 +42,31 @@ function renderPagination() {
     const container = document.getElementById('pagination-controls');
     if (!container) return;
     container.innerHTML = '';
+    
     const totalPages = Math.ceil(boletasData.length / ITEMS_PER_PAGE);
+    const select = document.createElement('select');
+    
+    select.style.width = 'auto';
+    select.style.minWidth = '220px';
+    select.style.cursor = 'pointer';
+    select.style.textAlign = 'center';
+
     for (let i = 0; i < totalPages; i++) {
-        const btn = document.createElement('button');
-        btn.className = `btn-nav ${i === currentPage ? 'active' : ''}`;
+        const option = document.createElement('option');
         const start = i * ITEMS_PER_PAGE;
         const end = Math.min(start + ITEMS_PER_PAGE - 1, boletasData.length - 1);
-        btn.textContent = `${start.toString().padStart(3, '0')} - ${end.toString().padStart(3, '0')}`;
-        btn.onclick = () => {
-            currentPage = i;
-            renderPagination();
-            generarBoletas();
-        };
-        container.appendChild(btn);
+        option.value = i;
+        option.textContent = `${start.toString().padStart(4, '0')} - ${end.toString().padStart(4, '0')}`;
+        if (i === currentPage) option.selected = true;
+        select.appendChild(option);
     }
+
+    select.addEventListener('change', (e) => {
+        currentPage = parseInt(e.target.value);
+        generarBoletas();
+    });
+
+    container.appendChild(select);
 }
 
 export function generarBoletas() {

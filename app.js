@@ -10,14 +10,14 @@ import * as utils from './utils.js';
 window.appData = { currentUser: null, tickets: [] };
 window.appModules = { ui, admin, utils };
 
-const TOTAL_BOLETAS = 1000;
+const TOTAL_BOLETAS = 10000;
 const EXPIRATION_TIME_MS = 2 * 60 * 60 * 1000;
-const WHATSAPP_NUMBER = "3219637388";
+const WHATSAPP_NUMBER = "573219637388";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSavedPreferences();
     initTimers();
-    setupEventListeners();
+    setupEventListeners()
     
     const localData = localStorage.getItem('boletasBackup');
     if (localData) {
@@ -51,10 +51,19 @@ function initializeDatabase() {
         if (!snapshot.exists()) {
             const initialData = {};
             for (let i = 0; i < TOTAL_BOLETAS; i++) {
-                const numStr = i.toString().padStart(3, '0');
-                initialData[i] = { id: i, num: numStr, status: 'libre', owner: null, phone: null, reservationTimestamp: null };
+                initialData[i] = { id: i, num: i.toString().padStart(4, '0'), status: 'libre', owner: null, phone: null, reservationTimestamp: null };
             }
             return set(dbRef(db, 'boletas'), initialData);
+        } else {
+            const data = snapshot.val();
+            const currentLength = Object.keys(data).length;
+            if (currentLength < TOTAL_BOLETAS) {
+                const updates = {};
+                for (let i = currentLength; i < TOTAL_BOLETAS; i++) {
+                    updates[i] = { id: i, num: i.toString().padStart(4, '0'), status: 'libre', owner: null, phone: null, reservationTimestamp: null };
+                }
+                return update(dbRef(db, 'boletas'), updates);
+            }
         }
         return Promise.resolve();
     });
@@ -247,7 +256,7 @@ function setupEventListeners() {
     const manualReservar = document.getElementById('btn-manual-reservar');
     
     const manualAction = (status) => {
-        const num = document.getElementById('manual-num').value.padStart(3, '0');
+        const num = document.getElementById('manual-num').value.padStart(4, '0');
         const name = document.getElementById('manual-name').value;
         const phone = document.getElementById('manual-phone').value;
         
@@ -272,7 +281,7 @@ function setupEventListeners() {
         if(prompt('Escribe "CONFIRMAR" para borrar TODAS las boletas') === 'CONFIRMAR') {
             const initialData = {};
             for (let i = 0; i < TOTAL_BOLETAS; i++) {
-                initialData[i] = { id: i, num: i.toString().padStart(3, '0'), status: 'libre', owner: null, phone: null, reservationTimestamp: null };
+                initialData[i] = { id: i, num: i.toString().padStart(4, '0'), status: 'libre', owner: null, phone: null, reservationTimestamp: null };
             }
             set(dbRef(db, 'boletas'), initialData).then(() => {
                 admin.logAudit('RESET_TOTAL', 'Toda la base de datos fue reiniciada', window.appData.currentUser.email);
@@ -293,7 +302,7 @@ function setupEventListeners() {
 
 document.getElementById('form-registrar-ganador').addEventListener('submit', (e) => {
     e.preventDefault();
-    const num = document.getElementById('ganador-num').value.padStart(3, '0');
+    const num = document.getElementById('ganador-num').value.padStart(4, '0');
     const premio = document.getElementById('ganador-premio').value;
     const fecha = new Date().toLocaleDateString();
 
