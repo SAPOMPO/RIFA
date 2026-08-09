@@ -270,16 +270,15 @@ main {
 }
 
 .banner-img {
-    width: 1400px;
-    height: 450px;
-    max-width: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1472 / 623;
+    object-fit: cover;
     display: block;
     margin: 0 auto;
     border-radius: 20px;
     border: 3px solid var(--color-primary-theme);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 18px var(--color-primary-theme);
-    background-color: rgba(5, 5, 5, 0.8);
 }
 
 .game-details {
