@@ -171,7 +171,6 @@ function setupEventListeners() {
         e.preventDefault();
         const nombre = utils.sanitizeHTML(document.getElementById('client-name').value);
         const telefono = utils.sanitizeHTML(document.getElementById('client-phone').value);
-        const fileInput = document.getElementById('client-receipt');
         
         if (!utils.validateColombianPhone(telefono)) {
             utils.toast('Ingresa un número de celular válido', 'error');
@@ -181,18 +180,6 @@ function setupEventListeners() {
         const btnSubmit = confirmClientForm.querySelector('button[type="submit"]');
         btnSubmit.disabled = true;
         btnSubmit.textContent = "Procesando...";
-
-        let receiptUrl = null;
-        if(fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            const fileRef = storageRef(storage, `receipts/${Date.now()}_${telefono}_${file.name}`);
-            try {
-                const snapshot = await uploadBytes(fileRef, file);
-                receiptUrl = await getDownloadURL(snapshot.ref);
-            } catch(e) {
-                utils.toast('Error subiendo comprobante', 'error');
-            }
-        }
 
         const ids = ui.getSelectedIds();
         let updates = {};
@@ -204,8 +191,7 @@ function setupEventListeners() {
             updates[`boletas/${id}`] = {
                 id: id, num: window.appData.tickets[id].num,
                 status: 'reservado', owner: nombre, phone: telefono,
-                reservationTimestamp: reservationTime,
-                receiptUrl: receiptUrl
+                reservationTimestamp: reservationTime
             };
         });
 
@@ -226,8 +212,7 @@ function setupEventListeners() {
             
             if(typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             
-            const msg = `*✅ Moto Pulzar NS400Z  - TRANSACCION ${transactionId}*\n\nHola, soy *${nombre}*. Tel: *${telefono}*.\n\n*🎫 Números:* ${numsStr}\n*💰 Total:* ${utils.formatMoney(total)}\n\n⚠️ Adjunto mi comprobante PDF y el comprobante de pago Nequi.`;
-            const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+            const msg = `*✅ Moto Pulzar NS400Z - TRANSACCION ${transactionId}*\n\nHola, soy *${nombre}*. Tel: *${telefono}*.\n\n*🎫 Números:* ${numsStr}\n*💰 Total:* ${utils.formatMoney(total)}\n\n⚠️ *A continuación te adjunto mi comprobante de pago y el PDF de mi reserva.*`;            const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
             
             ui.toggleModal('modal-cliente-confirm', false);
             setTimeout(() => window.open(waUrl, '_blank'), 1000);

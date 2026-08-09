@@ -209,6 +209,7 @@ input[type="text"], input[type="tel"], input[type="number"], input[type="date"],
     font-size: 0.95rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     outline: none;
+    box-sizing: border-box;
 }
 
 input:focus, select:focus {
@@ -321,6 +322,7 @@ main {
 .timers-grid {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 16px;
     margin: 24px 0;
     text-align: center;
@@ -418,6 +420,24 @@ main {
     background: var(--color-primary-theme);
     color: #000;
     border-color: var(--color-primary-theme);
+}
+.pagination-controls select {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border: 1px solid var(--color-primary-theme) !important;
+    font-weight: 600 !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+}
+.pagination-controls select option {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    padding: 10px !important;
+}
+.pagination-controls select option:checked,
+.pagination-controls select option:hover {
+    background-color: var(--color-primary-theme) !important;
+    color: #000000 !important;
 }
 
 .leyenda-container {
@@ -664,8 +684,17 @@ footer { text-align: center; padding: 32px 0 120px 0; font-size: 0.85rem; color:
 .btn-danger { background: rgba(190, 18, 60, 0.1); border-color: rgba(190, 18, 60, 0.3); color: #fb7185; }
 .btn-danger:hover { background: #be123c; border-color: #be123c; color: #ffffff; }
 
-.admin-data-summary { max-height: 400px; overflow-y: auto; margin-bottom: 24px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.06); }
-.admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.admin-data-summary { 
+    max-height: 400px; 
+    overflow-y: auto; 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 24px; 
+    border-radius: 8px; 
+    border: 1px solid rgba(255, 255, 255, 0.06); 
+}
+
+.admin-table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 0.9rem; }
 .admin-table th, .admin-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
 .admin-table th { background-color: rgba(255, 255, 255, 0.02); font-weight: 600; color: rgba(255, 255, 255, 0.7); position: sticky; top: 0; }
 .admin-table tr:hover { background-color: rgba(255, 255, 255, 0.01); }
@@ -693,25 +722,6 @@ footer { text-align: center; padding: 32px 0 120px 0; font-size: 0.85rem; color:
 }
 .pulse-whatsapp:hover { background-color: #059669; transform: scale(1.05); }
 
-@media (max-width: 768px) {
-    .nav-bar { padding: 12px 16px; flex-wrap: wrap;}
-    .nav-buttons { gap: 8px; margin-top: 10px; width: 100%; justify-content: space-between;}
-    .btn-nav { font-size: 0.85rem; padding: 8px 12px; }
-    .game-details { margin-top: 0; padding: 16px; }
-    .price { font-size: 1.75rem; }
-    .timers-grid { flex-direction: column; gap: 16px; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .stat-item p { font-size: 1.25rem; }
-    .grid-container { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 12px; }
-    .grid-container.grid-compact { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-    .boleta { font-size: 0.85rem; height: 48px; }
-    .buy-panel { flex-direction: column; gap: 16px; }
-    .total-text { font-size: 1.15rem; width: 100%; text-align: center; }
-    .btn-confirm { width: 100%; font-size: 1rem; }
-    .search-filter-bar { flex-direction: column; max-width: 100%; padding: 0 16px; }
-    .search-filter-bar input, .search-filter-bar select { flex-basis: auto; }
-}
-
 .pdf-receipt-template {
     width: 600px;
     padding: 40px;
@@ -723,10 +733,6 @@ footer { text-align: center; padding: 32px 0 120px 0; font-size: 0.85rem; color:
 .pdf-receipt-template h1 { color: #000; text-align: center; margin-bottom: 20px; }
 .pdf-receipt-template .details-row { margin-bottom: 10px; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
 .pdf-receipt-template .qr-box { margin-top: 30px; display: flex; justify-content: center; }
-
-.timers-grid {
-    align-items: center;
-}
 
 .logo-center-container {
     display: flex;
@@ -750,23 +756,46 @@ footer { text-align: center; padding: 32px 0 120px 0; font-size: 0.85rem; color:
     box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
 }
 
-.pagination-controls select {
-    background-color: #111111 !important;
-    color: #ffffff !important;
-    border: 1px solid var(--color-primary-theme) !important;
-    font-weight: 600 !important;
-    padding: 8px 16px !important;
-    border-radius: 6px !important;
+@media (max-width: 768px) {
+    .nav-bar { padding: 12px 16px; flex-wrap: wrap;}
+    .nav-buttons { gap: 8px; margin-top: 10px; width: 100%; justify-content: space-between;}
+    .btn-nav { font-size: 0.85rem; padding: 8px 12px; }
+    .game-details { margin-top: 0; padding: 16px; }
+    .price { font-size: 1.75rem; }
+    .timers-grid { flex-direction: column; gap: 16px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-item p { font-size: 1.25rem; }
+    .grid-container { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 12px; }
+    .grid-container.grid-compact { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    .boleta { font-size: 0.85rem; height: 48px; }
+    .buy-panel { flex-direction: column; gap: 16px; }
+    .total-text { font-size: 1.15rem; width: 100%; text-align: center; }
+    .btn-confirm { width: 100%; font-size: 1rem; }
+    .search-filter-bar { flex-direction: column; max-width: 100%; padding: 0 16px; }
+    .search-filter-bar input, .search-filter-bar select { flex-basis: auto; }
+    
+    .modal-content { padding: 16px; width: 95%; margin: 10px; }
+    .modal-content.admin-size { max-width: 100%; }
+    .admin-metrics-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+    .admin-actions-grid { grid-template-columns: 1fr !important; }
+    .admin-table th, .admin-table td { padding: 8px; font-size: 0.8rem; }
 }
 
-.pagination-controls select option {
-    background-color: #111111 !important;
-    color: #ffffff !important;
-    padding: 10px !important;
-}
-
-.pagination-controls select option:checked,
-.pagination-controls select option:hover {
-    background-color: var(--color-primary-theme) !important;
-    color: #000000 !important;
+@media (max-width: 320px) {
+    .grid-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
+    .boleta { font-size: 0.75rem; height: 40px; }
+    .hero-banner .price { font-size: 1.25rem; }
+    .stat-item p { font-size: 1rem; }
+    .timers-grid { flex-direction: column; gap: 8px; }
+    .countdown-timer { font-size: 1.25rem; }
+    .admin-table { min-width: 400px; font-size: 0.8rem; }
+    .buy-panel { padding: 0 8px; }
+    .total-text { font-size: 1rem; }
+    .total-text .highlight-text { font-size: 1.2rem; }
+    .btn-nav, .btn-confirm, .btn-admin-action { font-size: 0.75rem; padding: 6px 10px; }
+    .nav-buttons { flex-direction: column; }
+    .btn-nav { width: 100%; }
+    .search-filter-bar select { flex-basis: 100%; }
+    .logo-center-img { width: 80px; height: 80px; }
+    .admin-metrics-grid { grid-template-columns: 1fr !important; }
 }
