@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +10,31 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body data-theme="neon-green">
 <div id="toast-container"></div>
 
+<div id="audio-player-container" class="glass-box audio-widget">
+    <audio id="ambient-audio" loop>
+        <source src="https://www.soundjay.com/transportation/sounds/motorcycle-engine-idle-1.mp3" type="audio/mpeg">
+    </audio>
+    <button id="btn-audio-toggle" class="btn-nav"><i class="fas fa-volume-mute"></i></button>
+</div>
+
 <div id="modal-admin-login" class="modal hidden">
     <div class="modal-content">
         <span class="btn-close" onclick="window.appModules.ui.toggleModal('modal-admin-login', false)">&times;</span>
-        <h2>🔒 Acceso de Administrador</h2>
+        <h2 data-i18n="admin_access">🔒 Acceso de Administrador</h2>
         <form id="admin-login-form">
-            <label for="admin-email">Email:</label>
+            <label for="admin-email" data-i18n="email">Email:</label>
             <input type="email" id="admin-email" required autocomplete="username">
-            <label for="admin-password">Contraseña:</label>
+            <label for="admin-password" data-i18n="password">Contraseña:</label>
             <input type="password" id="admin-password" required autocomplete="current-password">
-            <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            <button type="submit" class="btn-primary" data-i18n="login">Iniciar Sesión</button>
+            <button type="button" id="btn-webauthn" class="btn-secondary" style="width:100%; margin-top:10px;"><i class="fas fa-fingerprint"></i> Acceso Biométrico</button>
             <p id="login-error-message" class="error-text"></p>
         </form>
     </div>
@@ -32,12 +43,12 @@
 <div id="modal-public-query" class="modal hidden">
     <div class="modal-content glass-box">
         <span class="btn-close" onclick="window.appModules.ui.toggleModal('modal-public-query', false)">&times;</span>
-        <h2 class="neon-glow-primary">🔍 Consultar mis Boletas</h2>
-        <p>Ingresa tu número de WhatsApp para ver tus reservas y pagos.</p>
+        <h2 class="neon-glow-primary" data-i18n="query_title">🔍 Consultar mis Boletas</h2>
+        <p data-i18n="query_desc">Ingresa tu número de WhatsApp para ver tus reservas y pagos.</p>
         <form id="public-query-form">
-            <label for="query-phone">Teléfono (WhatsApp):</label>
-            <input type="tel" id="query-phone" required placeholder="Ej: 3219876543">
-            <button type="submit" class="btn-confirm"><i class="fas fa-search"></i> Buscar Boletas</button>
+            <label for="query-phone" data-i18n="phone">Teléfono (WhatsApp):</label>
+            <input type="tel" id="query-phone" required placeholder="Ej: 3001234567">
+            <button type="submit" class="btn-confirm" data-i18n="search_tickets"><i class="fas fa-search"></i> Buscar Boletas</button>
         </form>
         <div id="public-query-results" class="hidden" style="margin-top: 16px;"></div>
     </div>
@@ -48,7 +59,7 @@
 <div id="modal-ganadores" class="modal hidden">
     <div class="modal-content glass-box">
         <span class="btn-close" onclick="window.appModules.ui.toggleModal('modal-ganadores', false)">&times;</span>
-        <h2 class="neon-glow-primary"><i class="fas fa-trophy"></i> Historial de Ganadores</h2>
+        <h2 class="neon-glow-primary"><i class="fas fa-trophy"></i> <span data-i18n="history_winners">Historial de Ganadores</span></h2>
         
         <div id="admin-ganadores-section" class="hidden">
             <form id="form-registrar-ganador" style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
@@ -68,7 +79,7 @@
             <i class="fas fa-motorcycle intro-icon drive-animation"></i>
         </div>
         <h1 class="title-glitch">GRAN RIFA</h1>
-        <p class="loading-text">Calentando motores<span class="dots"></span></p>
+        <p class="loading-text"><span data-i18n="loading">Calentando motores</span><span class="dots"></span></p>
         <div class="loading-bar-container">
             <div class="loading-bar-fill"></div>
         </div>
@@ -80,45 +91,60 @@
         <nav class="nav-bar glass-box">
             <span class="logo-text">Moto Pulzar NS400Z - 1 Millon Semanal</span>
             <div class="nav-buttons">
-                <button id="btn-theme-toggle" class="btn-nav"><i class="fas fa-palette"></i> Tema</button>
-                <button id="btn-public-query" class="btn-nav"><i class="fas fa-search"></i> Mis Boletas</button>
+                <select id="lang-selector" class="lang-select">
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="pt">PT</option>
+                </select>
+                <button id="btn-theme-toggle" class="btn-nav"><i class="fas fa-palette"></i> <span data-i18n="theme">Tema</span></button>
+                <button id="btn-public-query" class="btn-nav"><i class="fas fa-search"></i> <span data-i18n="my_tickets">Mis Boletas</span></button>
                 <button id="btn-admin" class="btn-nav"><i class="fas fa-user-lock"></i> Admin</button>
-                <button id="btn-ganadores" class="btn-nav"><i class="fas fa-trophy"></i> Historial</button>
+                <button id="btn-ganadores" class="btn-nav"><i class="fas fa-trophy"></i> <span data-i18n="history">Historial</span></button>
             </div>
         </nav>
         
         <div id="theme-selector-panel" class="glass-box hidden" style="margin-top: 10px; text-align: center;">
-            <p>Selecciona tu estilo visual:</p>
+            <p data-i18n="select_visual">Selecciona tu estilo visual:</p>
             <div class="theme-buttons">
                 <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-green')">🟢 Verde</button>
                 <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-blue')">🔵 Azul</button>
                 <button class="btn-nav" onclick="window.appModules.ui.setTheme('vip-gold')">🟡 Dorado</button>
                 <button class="btn-nav" onclick="window.appModules.ui.setTheme('neon-red')">🔴 Rojo</button>
             </div>
+            <div style="margin-top: 15px;">
+                <label for="custom-hex-color" data-i18n="custom_color">Color Personalizado:</label>
+                <input type="color" id="custom-hex-color" value="#10b981" style="width: 50px; height: 30px; border:none; background:none; cursor:pointer;">
+            </div>
         </div>
     </header>
 
 <section class="glass-box" style="margin-top:18px; text-align:center;">
-    <h2 style="margin-bottom:6px;">¿Cómo te ganas esa nave? 🚀</h2>
+    <h2 style="margin-bottom:6px;" data-i18n="how_to_win">¿Cómo te ganas esa nave? 🚀</h2>
     <p style="font-size:0.95rem; line-height:1.5; color:var(--muted);">
-        Elige tu número del <b>0000 al 9999</b> (el de la suerte, el cumpleaños del perro, el que sea).<br>
-        Haz tu reserva y envíanos el comprobante por WhatsApp.<br>
-        ¡Y listo! Quedas anotado para los premios semanales y la moto.<br><br>
-        <b>Colores:</b> <span style="color: var(--color-primary-theme)">🟩 Libre</span> | <span style="color: var(--color-reserved)">🟨 Reservado</span> | <span style="color: var(--color-paid)">🔴 Pagado</span>
+        <span data-i18n="instruction_1">Elige tu número del <b>0000 al 9999</b> (el de la suerte, el cumpleaños del perro, el que sea).</span><br>
+        <span data-i18n="instruction_2">Haz tu reserva y envíanos el comprobante por WhatsApp.</span><br>
+        <span data-i18n="instruction_3">¡Y listo! Quedas anotado para los premios semanales y la moto.</span><br><br>
+        <b data-i18n="colors">Colores:</b> <span style="color: var(--color-primary-theme)" data-i18n="free">🟩 Libre</span> | <span style="color: var(--color-reserved)" data-i18n="reserved">🟨 Reservado</span> | <span style="color: var(--color-paid)" data-i18n="paid">🔴 Pagado</span>
     </p>
+    <div id="referral-link-container" class="hidden" style="margin-top: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+        <p style="font-size: 0.85rem;" data-i18n="referral_msg">Tu enlace de referido activo:</p>
+        <input type="text" id="referral-link-input" readonly style="width: 80%; display: inline-block;">
+        <button class="btn-nav" id="btn-copy-referral"><i class="fas fa-copy"></i></button>
+    </div>
 </section>
 
     <section class="hero-banner fade-in">
-        <img src="Rifa.jpg" alt="Imagen de la Moto Pulzar NS400Z de la Rifa" class="banner-img">
-        <div class="game-details glass-box slide-up">
-            <h2>Pulzar NS400Z o $25.000.000 en Efectivo</h2>
-            <p class="price neon-glow-primary">$35.000 / Boleta</p>
-            <p>Sorteo Final: <span class="highlight-text">25/12/2026</span></p>
-            <p style="font-size: 0.9rem; margin-top: 4px;">Premio Mayor de la Lotería Santander</p>
-            <p style="font-size: 0.95rem; color: var(--color-reserved); margin-top: 8px;"><strong>$1.000.000 Semanales</strong> hasta el 18 de Dic</p>
+        <div id="threejs-canvas-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; border-radius: 20px; overflow: hidden; pointer-events: none;"></div>
+        <img src="Rifa.jpg" alt="Imagen de la Moto Pulzar NS400Z de la Rifa" class="banner-img" style="position: relative; z-index: 2; opacity: 0.85;">
+        <div class="game-details glass-box slide-up" style="z-index: 3;">
+            <h2 data-i18n="main_prize">Pulzar NS400Z o $25.000.000 en Efectivo</h2>
+            <p class="price neon-glow-primary">$35.000 / <span data-i18n="ticket">Boleta</span></p>
+            <p><span data-i18n="final_draw">Sorteo Final:</span> <span class="highlight-text">25/12/2026</span></p>
+            <p style="font-size: 0.9rem; margin-top: 4px;" data-i18n="lottery">Premio Mayor de la Lotería Santander</p>
+            <p style="font-size: 0.95rem; color: var(--color-reserved); margin-top: 8px;"><strong data-i18n="weekly_prize">$1.000.000 Semanales</strong> <span data-i18n="until">hasta el 18 de Dic</span></p>
             
             <div class="progress-wrapper">
-                <p style="font-size: 0.85rem; margin-top: 12px; margin-bottom: 4px;">Progreso de la Rifa (<span id="progress-text">0</span>%)</p>
+                <p style="font-size: 0.85rem; margin-top: 12px; margin-bottom: 4px;"><span data-i18n="progress">Progreso de la Rifa</span> (<span id="progress-text">0</span>%)</p>
                 <div class="progress-container">
                     <div class="progress-bar" id="main-progress-bar" style="width: 0%;"></div>
                 </div>
@@ -127,10 +153,10 @@
     </section>
 
     <section class="dashboard-stats glass-box slide-up" style="animation-delay: 1.8s;">
-        <h3>Tiempo Restante</h3>
+        <h3 data-i18n="time_left">Tiempo Restante</h3>
         <div class="timers-grid">
             <div>
-                <p>Sorteo Final</p>
+                <p data-i18n="final_draw">Sorteo Final</p>
                 <div id="timer-final" class="countdown-timer neon-glow-red"></div>
             </div>
 
@@ -139,54 +165,54 @@
             </div>
 
             <div class="timer-box">
-                <p>Próximo Semanal</p>
+                <p data-i18n="next_weekly">Próximo Semanal</p>
                 <div id="timer-semanal" class="countdown-timer neon-glow-primary"></div>
             </div>
         </div>
 
-        <h3 style="margin-top: 20px;">Rifas completas</h3>
+        <h3 style="margin-top: 20px;" data-i18n="completed_tickets">Rifas completas</h3>
         <div class="stats-grid">
             <div class="stat-item libre">
                 <p id="stat-libre">0</p>
-                <span>Libres</span>
+                <span data-i18n="free">Libres</span>
             </div>
             <div class="stat-item reservado">
                 <p id="stat-reservado">0</p>
-                <span>Reservadas</span>
+                <span data-i18n="reserved">Reservadas</span>
             </div>
             <div class="stat-item pagado">
                 <p id="stat-pagado">0</p>
-                <span>Pagadas</span>
+                <span data-i18n="paid">Pagadas</span>
             </div>
             <div class="stat-item total">
                 <p>10000</p>
-                <span>Total</span>
+                <span data-i18n="total">Total</span>
             </div>
         </div>
         
         <div style="margin-top: 16px; text-align: center; font-size: 0.9rem;">
-            <i class="fas fa-fire" style="color: #f5a623;"></i> <span id="stat-24h" class="highlight-text">0</span> boletas reservadas/pagadas en las últimas 24 horas. ¡No te quedes sin la tuya!
+            <i class="fas fa-fire" style="color: #f5a623;"></i> <span id="stat-24h" class="highlight-text">0</span> <span data-i18n="tickets_24h">boletas reservadas/pagadas en las últimas 24 horas. ¡No te quedes sin la tuya!</span>
         </div>
     </section>
 
     <section class="boletas-selection-section slide-up" style="animation-delay: 2.1s;">
         <div class="glass-box">
-            <h3>Selecciona tus Números (0000-9999)👍</h3>
+            <h3 data-i18n="select_numbers">Selecciona tus Números (0000-9999)👍</h3>
             <p class="leyenda-container">
-                <span class="badge disponible"><i class="fas fa-circle"></i> Libre</span>
-                <span class="badge reservado"><i class="fas fa-circle"></i> Reservado</span>
-                <span class="badge pagado"><i class="fas fa-circle"></i> Pagado</span>
+                <span class="badge disponible"><i class="fas fa-circle"></i> <span data-i18n="free">Libre</span></span>
+                <span class="badge reservado"><i class="fas fa-circle"></i> <span data-i18n="reserved">Reservado</span></span>
+                <span class="badge pagado"><i class="fas fa-circle"></i> <span data-i18n="paid">Pagado</span></span>
             </p>
 
             <div class="search-filter-bar">
                 <input type="text" id="search-number" placeholder="Buscar número (ej: 123)">
                 <select id="filter-status">
-                    <option value="todos">Mostrar Todos</option>
-                    <option value="libre">Disponibles</option>
-                    <option value="reservado">Reservados</option>
-                    <option value="pagado">Pagados</option>
+                    <option value="todos" data-i18n="show_all">Mostrar Todos</option>
+                    <option value="libre" data-i18n="free">Disponibles</option>
+                    <option value="reservado" data-i18n="reserved">Reservados</option>
+                    <option value="pagado" data-i18n="paid">Pagados</option>
                 </select>
-                <button id="btn-grid-toggle" class="btn-nav"><i class="fas fa-compress-alt"></i> Cuadrícula</button>
+                <button id="btn-grid-toggle" class="btn-nav"><i class="fas fa-compress-alt"></i> <span data-i18n="grid">Cuadrícula</span></button>
             </div>
             
             <div class="pagination-controls" id="pagination-controls"></div>
@@ -195,40 +221,54 @@
         </div>
     </section>
 
+    <section class="testimonials-section slide-up" style="animation-delay: 2.2s;">
+        <h2 data-i18n="testimonials_title">Entregas y Testimonios 📹</h2>
+        <div class="glass-box" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <iframe width="100%" style="max-width: 480px; border-radius: 12px;" height="270" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div style="max-width: 480px; flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                <p style="font-style: italic;">"Increíble sistema, muy transparente. Recibí mi premio sin complicaciones."</p>
+                <p style="text-align: right; color: var(--color-primary-theme); font-weight: bold;">- Carlos R. 🥇</p>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                <p style="font-style: italic;">"La moto de mis sueños, gracias a la rifa todo fue legal y rápido."</p>
+                <p style="text-align: right; color: var(--color-primary-theme); font-weight: bold;">- Andrea M. 🥈</p>
+            </div>
+        </div>
+    </section>
+
 <section class="rules-faq-section slide-up" style="animation-delay: 2.4s;">
-    <h2>Lo que necesitas saber (¡sin rodeos!) 📜⚡</h2>
+    <h2 data-i18n="faq_title">Lo que necesitas saber (¡sin rodeos!) 📜⚡</h2>
     <div class="glass-box">
         <details>
-            <summary>📅 ¿Cuándo me gano esa nave? (Sorteo final)</summary>
-            <p>El día de la verdad es el <b>25 de Diciembre de 2026</b> con la Lotería de Santander. Si tu boleta dice 🔴 <b>PAGADO</b>, ¡ya estás cruzando los dedos! 🤞🔥</p>
+            <summary data-i18n="faq_1_q">📅 ¿Cuándo me gano esa nave? (Sorteo final)</summary>
+            <p data-i18n="faq_1_a">El día de la verdad es el <b>25 de Diciembre de 2026</b> con la Lotería de Santander. Si tu boleta dice 🔴 <b>PAGADO</b>, ¡ya estás cruzando los dedos! 🤞🔥</p>
         </details>
         <details>
-            <summary>📌 ¿Tengo que estar pegado a la pantalla para ganar?</summary>
-            <p>¡Para nada! Si caes como ganador, te llamamos hasta por debajo de las piedras de una para darte la buena noticia. Tú solo ten el celular cargado. 📲🏆</p>
+            <summary data-i18n="faq_2_q">📌 ¿Tengo que estar pegado a la pantalla para ganar?</summary>
+            <p data-i18n="faq_2_a">¡Para nada! Si caes como ganador, te llamamos hasta por debajo de las piedras de una para darte la buena noticia. Tú solo ten el celular cargado. 📲🏆</p>
         </details>
         <details>
-            <summary>🧾 ¿Cómo sé que mi compra sí quedó guardada?</summary>
-            <p>Cero cuentos raros. Apenas envías tu comprobante, el sistema registra tu número digitalmente y pasa a rojo. Todo transparente, legal y a la vista de todos. ✔️🧾</p>
+            <summary data-i18n="faq_3_q">🧾 ¿Cómo sé que mi compra sí quedó guardada?</summary>
+            <p data-i18n="faq_3_a">Cero cuentos raros. Apenas envías tu comprobante, el sistema registra tu número digitalmente y pasa a rojo. Todo transparente, legal y a la vista de todos. ✔️🧾</p>
         </details>
         <details>
-            <summary>🎫 ¿Puedo comprar un combo de números para asegurar?</summary>
-            <p>¡Obvio! Llevarte 1 está bien, pero llevarte 3, 5 o 10 te pone más cerca del motor. Entre más números asegures, ¡menos chance le dejas al vecino! 😎🎟️</p>
+            <summary data-i18n="faq_4_q">🎫 ¿Puedo comprar un combo de números para asegurar?</summary>
+            <p data-i18n="faq_4_a">¡Obvio! Llevarte 1 está bien, pero llevarte 3, 5 o 10 te pone más cerca del motor. Entre más números asegures, ¡menos chance le dejas al vecino! 😎🎟️</p>
         </details>
         <details>
-            <summary>🚦 ¿Qué significan las luces de colores?</summary>
-            <p>
+            <summary data-i18n="faq_5_q">🚦 ¿Qué significan las luces de colores?</summary>
+            <p data-i18n="faq_5_a">
                 🟩 <b>Libre:</b> ¡Aprovéchalo antes de que te lo quiten!<br>
                 🟨 <b>Reservado:</b> Alguien lo apartó pero no ha pagado (aún puede volar).<br>
                 🔴 <b>Pagado:</b> ¡Boleta asegurada y lista para el premio! 🎯
             </p>
         </details>
         <details>
-            <summary>🚚 Si me gano la moto, ¿cómo me la entregan?</summary>
-            <p>Te la entregamos con documentos al día, llaves en mano y lista para encender. Te la llevas 100% legal, asegurada y directa para rodar. 🏍️💨✨</p>
+            <summary data-i18n="faq_6_q">🚚 Si me gano la moto, ¿cómo me la entregan?</summary>
+            <p data-i18n="faq_6_a">Te la entregamos con documentos al día, llaves en mano y lista para encender. Te la llevas 100% legal, asegurada y directa para rodar. 🏍️💨✨</p>
         </details>
         <details>
-            <summary>⭐ ¿Qué tan seguro y confiable es esto?</summary>
-            <p>Cero rodeos. El sistema guarda automáticamente tus reservas y pagos sin falla. Además, podrás revisar los testimonios y ganadores pasados. ¡Aquí todo es legal y transparente! 🔐🤝</p>
+            <summary data-i18n="faq_7_q">⭐ ¿Qué tan seguro y confiable es esto?</summary>
+            <p data-i18n="faq_7_a">Cero rodeos. El sistema guarda automáticamente tus reservas y pagos sin falla. Además, podrás revisar los testimonios y ganadores pasados. ¡Aquí todo es legal y transparente! 🔐🤝</p>
         </details>
     </div>
 </section>
@@ -248,40 +288,47 @@
 <div id="sticky-form-buy" class="sticky-footer hidden">
     <div class="buy-panel">
         <div class="total-info">
-            <span class="total-text">Total a Pagar <span id="num-seleccionados-count"></span>:</span>
+            <span class="total-text"><span data-i18n="total_to_pay">Total a Pagar</span> <span id="num-seleccionados-count"></span>:</span>
             <span id="total-price" class="neon-glow-red"></span>
         </div>
-        <button id="btn-participar-main" class="btn-confirm pulse"><i class="fab fa-whatsapp"></i> Participar Ahora</button>
+        <button id="btn-participar-main" class="btn-confirm pulse"><i class="fab fa-whatsapp"></i> <span data-i18n="participate_now">Participar Ahora</span></button>
     </div>
 </div>
 
 <div id="modal-cliente-confirm" class="modal hidden">
     <div class="modal-content glass-box">
         <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-cliente-confirm', false);">&times;</button>
-        <h2 class="neon-glow-primary">Confirma tu Reserva</h2>
-        <p>Estás a punto de reservar los números: <strong id="client-modal-numbers" class="highlight-text"></strong></p>
-        <p class="small-text">Diligencia tus datos para que podamos contactarte y confirmar tu pago. Tu reserva dura 2 horas.</p>
+        <h2 class="neon-glow-primary" data-i18n="confirm_reservation">Confirma tu Reserva</h2>
+        <p><span data-i18n="about_to_reserve">Estás a punto de reservar los números:</span> <strong id="client-modal-numbers" class="highlight-text"></strong></p>
+        <p class="small-text" data-i18n="reserve_warning">Diligencia tus datos para que podamos contactarte y confirmar tu pago. Tu reserva dura 2 horas.</p>
         
         <div class="payment-methods" style="margin: 16px 0; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-            <p style="margin-bottom: 8px; font-weight: 600;">Cuentas de Pago:</p>
+            <p style="margin-bottom: 8px; font-weight: 600;" data-i18n="payment_accounts">Cuentas de Pago:</p>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span>🟣 Nequi: 321 963 7388</span>
-                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyText('3219637388')"><i class="fas fa-copy"></i> Copiar</button>
+                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyAndOpen('3219637388', 'nequi')"><i class="fas fa-copy"></i> Copiar & Pagar</button>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span>🔴 Efectivo: Dime en donde y hay estare</span>
-                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyText('3219637388')"><i class="fas fa-copy"></i> Copiar</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span>🔴 Daviplata: 321 963 7388</span>
+                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyAndOpen('3219637388', 'daviplata')"><i class="fas fa-copy"></i> Copiar & Pagar</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span>🟡 Bancolombia: 123 456 789</span>
+                <button type="button" class="btn-nav" onclick="window.appModules.utils.copyAndOpen('123456789', 'bancolombia')"><i class="fas fa-copy"></i> Copiar & Pagar</button>
             </div>
         </div>
 
         <form id="client-confirm-form">
-            <label for="client-name">Nombre Completo:</label>
+            <label for="client-name" data-i18n="full_name">Nombre Completo:</label>
             <input type="text" id="client-name" required placeholder="(Completo, obligatorio)">
             
-            <label for="client-phone">Teléfono de Contacto (WhatsApp):</label>
-            <input type="tel" id="client-phone" required placeholder="Ej: 3219876543">
+            <label for="client-phone" data-i18n="contact_phone">Teléfono de Contacto (WhatsApp):</label>
+            <input type="tel" id="client-phone" required placeholder="Ej: 3001234567">
+            
+            <label for="client-coupon" data-i18n="promo_code">Código Promocional (Opcional):</label>
+            <input type="text" id="client-coupon" placeholder="Ej: MOTO10">
 
-            <button type="submit" class="btn-confirm-whatsapp"><i class="fab fa-whatsapp"></i> RESERVAR Y ENVIAR WHATSAPP</button>
+            <button type="submit" class="btn-confirm-whatsapp"><i class="fab fa-whatsapp"></i> <span data-i18n="reserve_and_wa">RESERVAR Y ENVIAR WHATSAPP</span></button>
         </form>
     </div>
 </div>
@@ -307,9 +354,14 @@
             </div>
         </div>
 
+        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 24px;">
+            <canvas id="admin-chart-sales" width="400" height="150"></canvas>
+        </div>
+
         <div class="admin-actions-grid">
             <button id="btn-assign-manual" class="btn-admin-action"><i class="fas fa-edit"></i> Asignar Manual</button>
-            <button id="btn-download-data" class="btn-admin-action"><i class="fas fa-download"></i> Exportar Avanzado</button>
+            <button id="btn-download-data" class="btn-admin-action"><i class="fas fa-file-excel"></i> Exportar Avanzado</button>
+            <button id="btn-live-roulette" class="btn-admin-action" style="background: var(--color-primary-theme); color: #000;"><i class="fas fa-dharmachakra"></i> Ruleta en Vivo</button>
             <button id="btn-reset-data" class="btn-admin-action btn-danger"><i class="fas fa-eraser"></i> Reestableser</button>
         </div>
         
@@ -332,16 +384,29 @@
     </div>
 </div>
 
+<div id="modal-live-roulette" class="modal hidden">
+    <div class="modal-content glass-box" style="text-align: center;">
+        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-live-roulette', false); window.appModules.ui.toggleModal('modal-admin-panel', true);">&times;</button>
+        <h2 class="neon-glow-primary">Sorteo en Vivo</h2>
+        <p>Selección criptográficamente imparcial entre boletas pagadas.</p>
+        <div id="roulette-wheel-container" style="margin: 30px auto; width: 250px; height: 250px; border-radius: 50%; border: 4px solid var(--color-primary-theme); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; background: rgba(0,0,0,0.5); transition: transform 3s cubic-bezier(0.25, 1, 0.5, 1);">
+            ???
+        </div>
+        <button id="btn-spin-roulette" class="btn-confirm pulse" style="font-size: 1.2rem; padding: 15px 30px;">GIRAR RULETA</button>
+        <div id="roulette-winner-info" class="hidden" style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.2); border-radius: 8px;"></div>
+    </div>
+</div>
+
 <div id="modal-export-advanced" class="modal hidden">
     <div class="modal-content glass-box">
         <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-export-advanced', false); window.appModules.ui.toggleModal('modal-admin-panel', true);">&times;</button>
         <h2 class="neon-glow-primary">Exportación Avanzada</h2>
         <p>Seleccione el formato y los datos a exportar.</p>
         <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
-            <button class="btn-nav" onclick="window.appModules.admin.exportData('csv', 'pagadas')">📄 CSV (Solo Pagadas)</button>
-            <button class="btn-nav" onclick="window.appModules.admin.exportData('csv', 'todos')">📄 CSV (Todas las registradas)</button>
+            <button class="btn-nav" onclick="window.appModules.admin.exportData('xlsx', 'pagadas')">📊 Excel (.xlsx) (Solo Pagadas)</button>
+            <button class="btn-nav" onclick="window.appModules.admin.exportData('xlsx', 'todos')">📊 Excel (.xlsx) (Todas las registradas)</button>
             <button class="btn-nav" onclick="window.appModules.admin.exportData('json', 'todos')">📋 JSON (Respaldo Completo)</button>
-            <button class="btn-nav" onclick="window.appModules.admin.exportLogs()">📜 Descargar Logs de Auditoría</button>
+            <button class="btn-nav" onclick="window.appModules.admin.exportLogs()">📜 Descargar Logs de Auditoría (.xlsx)</button>
         </div>
     </div>
 </div>
@@ -366,61 +431,33 @@
     </div>
 </div>
 
-<div id="modal-register-winner" class="modal hidden">
-    <div class="modal-content glass-box">
-        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-register-winner', false); window.appModules.ui.toggleModal('modal-admin-panel', true);">&times;</button>
-        <h2 class="neon-glow-red">Registro de Sorteo</h2>
-        <p>Registra el resultado de un sorteo semanal o final.</p>
-        <form id="form-register-winner">
-            <label for="winner-date">Fecha del Sorteo:</label>
-            <input type="date" id="winner-date" required value="2026-12-25">
-            <label for="winner-lottery">Lotería / Sorteo:</label>
-            <input type="text" id="winner-lottery" required placeholder="Ej: Bucaramanga">
-            <label for="winner-number">Número Ganador (0000-9999):</label>
-            <input type="number" id="winner-number" min="0" max="9999" required placeholder="Ej: 9999">
-            <button type="submit" class="btn-confirm-whatsapp"><i class="fas fa-crown"></i> REGISTRAR GANADOR</button>
-        </form>
-    </div>
-</div>
-
-<div id="modal-sorteo-history" class="modal hidden">
-    <div class="modal-content glass-box admin-size">
-        <button class="btn-close" onclick="window.appModules.ui.toggleModal('modal-sorteo-history', false);">&times;</button>
-        <h2 class="neon-glow-primary">Historial de Sorteos</h2>
-        <p>Ganadores anteriores registrados.</p>
-        <div class="admin-data-summary glass-box" style="max-height: 500px;">
-            <table id="table-winner-history" class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Lotería</th>
-                        <th>Número</th>
-                        <th>Estado Cliente</th>
-                    </tr>
-                </thead>
-                <tbody id="table-winner-history-body">
-                    <tr><td colspan="4">Cargando historial...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
 <footer class="epic-footer">
     <div class="footer-content glass-box">
         <div class="footer-section contact-info">
-            <h3>Contacto Directo del Desarrollador</h3>
+            <h3 data-i18n="contact_dev">Contacto Directo del Desarrollador</h3>
             <p><i class="fas fa-user"></i> Camilin</p>
             <p><a href="https://SAPOMPO.github.io/RIFA/creditos.html" target="_blank">Página del administrador</a></p>
         </div>
         <div class="footer-section">
-            <h3>Legal & Créditos</h3>
+            <h3 data-i18n="legal">Legal & Créditos</h3>
             <p class="credit-text small">
                 © 2026 | Todos los derechos reservados.
             </p>
         </div>
     </div>
 </footer>
+
+<div id="chat-widget" class="chat-widget collapsed">
+    <div class="chat-header" id="chat-header-toggle">
+        <span><i class="fas fa-headset"></i> Soporte en Vivo</span>
+        <i class="fas fa-chevron-up toggle-icon"></i>
+    </div>
+    <div class="chat-body" id="chat-messages"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+        <button id="btn-send-chat"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
 
 <a href="https://wa.me/573227086610?text=Hola%2C%20tengo%20una%20duda%20sobre%20la%20rifa%20de%20la%20Pulsar%20NS400Z" 
    id="floating-whatsapp-btn" target="_blank" class="pulse-whatsapp">

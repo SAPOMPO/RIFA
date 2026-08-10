@@ -13,6 +13,7 @@ export function initUI(data) {
     updateStats();
     calculateProgress();
     check24hMetrics();
+    initThreeJS();
 }
 
 export function toggleModal(id, show) {
@@ -219,4 +220,48 @@ function check24hMetrics() {
     const count24h = boletasData.filter(b => b.reservationTimestamp && b.reservationTimestamp > limit).length;
     const stat24h = document.getElementById('stat-24h');
     if(stat24h) stat24h.textContent = count24h;
+}
+
+function initThreeJS() {
+    if(typeof THREE === 'undefined') return;
+    const container = document.getElementById('threejs-canvas-container');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const geometry = new THREE.TorusGeometry(10, 1.5, 16, 100);
+    const material = new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true, transparent: true, opacity: 0.3 });
+    const torus = new THREE.Mesh(geometry, material);
+    scene.add(torus);
+    
+    camera.position.z = 30;
+
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+
+    container.addEventListener('mousedown', () => isDragging = true);
+    container.addEventListener('mouseup', () => isDragging = false);
+    container.addEventListener('mousemove', (e) => {
+        if(isDragging) {
+            const deltaMove = { x: e.offsetX - previousMousePosition.x, y: e.offsetY - previousMousePosition.y };
+            torus.rotation.x += deltaMove.y * 0.01;
+            torus.rotation.y += deltaMove.x * 0.01;
+        }
+        previousMousePosition = { x: e.offsetX, y: e.offsetY };
+    });
+
+    const animate = function () {
+        requestAnimationFrame(animate);
+        if(!isDragging) {
+            torus.rotation.x += 0.005;
+            torus.rotation.y += 0.005;
+        }
+        renderer.render(scene, camera);
+    };
+    animate();
 }
