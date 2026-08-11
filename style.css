@@ -79,10 +79,9 @@ main { max-width: 1100px; margin: 0 auto; padding: 0 20px 100px 20px; }
 .chat-input-area input { flex: 1; margin: 0; border-radius: 6px 0 0 6px; padding: 8px; border-right: none; }
 .chat-input-area button { border-radius: 0 6px 6px 0; background: var(--color-primary-theme); color: #000; border: none; padding: 0 15px; cursor: pointer; }
 
-.hero-banner { position: relative; margin-top: 24px; display: flex; justify-content: center; align-items: center; }
+.hero-banner { position: relative; margin-top: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .banner-img { width: 100%; height: auto; max-width: 100%; aspect-ratio: 1472 / 623; object-fit: fill; display: block; margin: 0 auto; border-radius: 20px; border: 3px solid var(--color-primary-theme); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 18px var(--color-primary-theme); }
-.game-details { position: relative; padding: 24px; text-align: center; margin-top: -40px; max-width: 600px; margin-left: auto; margin-right: auto; z-index: 10; }
-.price { font-size: 2rem; font-weight: 700; color: #ffffff; margin-top: 8px; letter-spacing: -0.02em; }
+.game-details { position: relative; padding: 24px; text-align: center; margin-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto; z-index: 10; width: 100%; }.price { font-size: 2rem; font-weight: 700; color: #ffffff; margin-top: 8px; letter-spacing: -0.02em; }
 .progress-container { width: 100%; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin-top: 5px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
 .progress-bar { height: 100%; background: var(--color-primary-theme); box-shadow: var(--shadow-neon-primary); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
 
@@ -269,7 +268,7 @@ footer { text-align: center; padding: 32px 0 120px 0; font-size: 0.85rem; color:
 }
 
 @media (max-width: 768px) {
-  .clase-del-contenedor {
+  .hero-banner {
     display: flex !important;
     flex-direction: column !important; 
     align-items: center;
@@ -278,13 +277,13 @@ footer { text-align: center; padding: 32px 0 120px 0; font-size: 0.85rem; color:
     gap: 20px; 
   }
 
-  .clase-del-contenedor img {
+  .banner-img {
     width: 100% !important;
     height: auto !important;
     max-width: 100% !important;
   }
 
-  .clase-del-texto {
+  .game-details {
     width: 100% !important;
     box-sizing: border-box;
   }
