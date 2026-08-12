@@ -1,84 +1,43 @@
-# 🎟️ RIFA
+# Sistema de Rifas y Boletas Digitales
 
-¡Hola! 👋
+Esta plataforma fue desarrollada para facilitar la organización, venta y administración de boletas para rifas de manera directa, rápida y transparente. Permite a los usuarios elegir sus números favoritos desde cualquier dispositivo y al organizador llevar un control ordenado de cada transacción.
 
-Este es un proyecto que hice para administrar una rifa de una forma sencilla, rápida y organizada.
+## Qué incluye este proyecto
 
-La idea nació porque hacer todo en papel o en una hoja de cálculo puede ser lento y terminar siendo un desorden. Así que decidí crear una página web donde fuera mucho más fácil controlar los números, registrar compradores y llevar todo al día.
+El sitio está pensado para ser intuitivo tanto para quien compra como para quien administra:
 
-Aunque parece una página simple, detrás tiene bastante trabajo y muchas horas de prueba y error. Durante el desarrollo aprendí bastante sobre JavaScript, Firebase y cómo organizar mejor un proyecto.
+- Vista pública para compradores: Interfaz clara donde los clientes ven los números disponibles, ocupados o apartados, seleccionan los que desean y completan su información de contacto.
+- Panel de administración: Módulo interno para revisar los apartados, confirmar pagos, liberar números vencidos y gestionar los detalles del sorteo.
+- Base de datos en tiempo real: Sincronización continua mediante Firebase para evitar que dos personas aparten el mismo número al mismo tiempo.
+- Diseño adaptable: La interfaz ajusta sus elementos automáticamente para lucir bien en teléfonos celulares, tabletas y computadoras.
+- Modo aplicación (PWA): Cuenta con manifest y service worker integrados para ofrecer una experiencia rápida e instalable en dispositivos móviles.
 
----
+## Estructura de los archivos
 
-## ✨ ¿Qué puede hacer?
+A continuación se detalla la función de cada archivo principal dentro del proyecto:
 
-- 🎟️ Administrar los números de la rifa.
-- 👤 Registrar compradores.
-- 🔥 Guardar toda la información en Firebase.
-- 🔍 Buscar información rápidamente.
-- 📱 Funciona tanto en computador como en celular.
-- ✅ Validaciones para evitar errores.
-- ⚡ Interfaz rápida, limpia y fácil de usar.
+- `index.html`: Página principal donde los compradores interactúan y eligen sus números.
+- `app.js`: Manejo de la lógica general de la página y coordinación de eventos.
+- `boletas-ui.js`: Encargado de mostrar la cuadrícula de números y actualizar los estados visuales (disponible, seleccionado, reservado o vendido).
+- `admin.js`: Control del panel administrativo para confirmar comprobantes y actualizar estados de venta.
+- `firebase-config.js`: Parámetros de conexión con la base de datos y servicios de Firebase.
+- `utils.js`: Funciones de apoyo para validar entradas de formulario, formatear montos y manejar fechas.
+- `style.css`: Estilos visuales del sitio enfocados en una navegación cómoda y botones claros.
+- `sw.js` y `manifest.json`: Configuración para convertir el sitio en una aplicación instalable.
 
----
+## Pasos para ponerlo a funcionar
 
-## 🛠️ Tecnologías utilizadas
+1. Configuración de Firebase
+   Abre el archivo `firebase-config.js` e ingresa las llaves correspondientes a tu proyecto en Firebase (apiKey, authDomain, projectId, etc.).
 
-- HTML5
-- CSS3
-- JavaScript
-- Firebase Authentication
-- Firebase Realtime Database
-- GitHub Pages
+2. Personalización del sorteo
+   Reemplaza la imagen del premio (`Rifa.jpg`) y el logotipo (`Logo.jpg`) por los tuyos. Luego ajusta los textos en `index.html` con la información de tu rifa (precio por boleta, fecha del sorteo y premios).
 
----
+3. Publicación
+   Sube la carpeta con todos los archivos a tu servicio de hosting de preferencia (como Firebase Hosting, Vercel, Netlify o un servidor tradicional). Funciona directamente en el navegador sin necesidad de instalar dependencias adicionales en el servidor.
 
-## 📂 Estructura del proyecto
+## Consejos prácticos de mantenimiento
 
-```text
-📁 RIFA
- ├── index.html
- ├── style.css
- ├── app.js
- ├── firebase.js
- ├── edit.mp3
- └── Rifa.jpg
-```
-
-Intenté mantener el proyecto lo más organizado posible para que fuera fácil de entender y modificar.
-
----
-
-## 📚 Lo que aprendí
-
-Este proyecto me ayudó a entender mejor muchas cosas, entre ellas:
-
-- Cómo conectar una página web con Firebase.
-- Cómo trabajar con autenticación de usuarios.
-- Cómo guardar y leer información en tiempo real.
-- Cómo organizar mejor el código.
-- Cómo crear una interfaz más agradable para las personas que la usan.
-
-Cada cambio me enseñó algo nuevo.
-
----
-
-## 🚀 Próximas mejoras
-
-Todavía tengo varias ideas para seguir mejorándolo.
-
-- 📊 Estadísticas de la rifa.
-- 📄 Exportar información.
-- 🎨 Más opciones de personalización.
-- ⚡ Mejor rendimiento.
-- 🧹 Seguir organizando el código.
-
----
-
-## 💙 Gracias
-
-Si llegaste hasta aquí, ¡gracias por visitar este proyecto!
-
-No soy un desarrollador profesional; simplemente me gusta aprender, experimentar y crear cosas nuevas. Cada proyecto que hago me enseña algo diferente y este no fue la excepción.
-
-Seguiré mejorándolo poco a poco. 🚀
+- Revisa con frecuencia el panel de administración para verificar los pagos recibidos y marcar las boletas como vendidas a tiempo.
+- Configura adecuadamente las reglas de seguridad en Firebase para proteger la base de datos contra modificaciones no autorizadas.
+- Procura mantener las imágenes optimizadas en peso para que la página cargue rápido incluso en zonas con señal débil.
