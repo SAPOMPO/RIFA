@@ -356,7 +356,7 @@ function setupEventListeners() {
         const ticket = window.appData.tickets.find(t => t.num === num);
         if(!ticket) return utils.toast('Número inválido', 'error');
         update(dbRef(db, `boletas/${ticket.id}`), { status: status, owner: name, phone: phone, reservationTimestamp: status === 'reservado' ? Date.now() : null }).then(() => {
-            admin.logAudit('ASIGNACION_MANUAL', `Boleta ${num} asigada como ${status} a ${name}`, window.appData.currentUser.email);
+            admin.logAudit('ASIGNACION_MANUAL', `Boleta ${num} asignada como ${status} a ${name}`, window.appData.currentUser.email);
             utils.toast(`Boleta ${num} actualizada`, 'success');
             document.getElementById('form-assign-manual').reset();
             ui.toggleModal('modal-assign-manual', false);
@@ -407,7 +407,7 @@ function setupEventListeners() {
                 lista.innerHTML += `<div style="background: rgba(255,255,255,0.05); padding: 12px; margin-top: 10px; border-radius: 6px; border-left: 4px solid var(--color-primary-theme);"><strong style="font-size: 1.1rem;">Boleta Ganadora: ${g.num}</strong><br>Premio: <span style="color: var(--color-primary-theme);">${g.premio}</span><br><small style="color: rgba(255,255,255,0.5);">${g.fecha}</small></div>`;
             });
         } else {
-            lista.innerHTML = '<p style="text-align: center; opacity: 0.7;">No hay ganadores registrados ainda.</p>';
+            lista.innerHTML = '<p style="text-align: center; opacity: 0.7;">No hay ganadores registrados aún.</p>';
         }
     });
 
